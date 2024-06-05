@@ -44,3 +44,47 @@ $ python3 val.py
 ## Results
 
 Put your results here showing the graphs got from [TUM online validation tool](https://cvg.cit.tum.de/data/datasets/rgbd-dataset/online_evaluation).
+
+### Results 1
+#### Params:
+**LSTM**
+hidden_size = 500, num_layers = 2, bidirectional = False, lstm_dropout = 0.2.
+
+**dataset**
+sequence_length = 2, batch_size = 32.
+
+**train**
+learning_rate = 0.001, epochs = 5.
+
+Loss = \[0.004410954854336689, 0.004378075456109152, 0.004340186298302962, 0.004356362351896181, 0.004372523757036271\]
+
+**val**
+- rgbd_dataset_freiburg1_room_secret
+
+![image](https://github.com/ULE-MURIA-2023-2024/pr-vo-lstm-TheSmileXiao/assets/93156255/41901453-0683-46a2-a816-f7bf1aff6148)
+- freiburg3_walking_rpy_validation
+
+![image](https://github.com/ULE-MURIA-2023-2024/pr-vo-lstm-TheSmileXiao/assets/93156255/65152b9f-7602-4674-bafb-c62471643694)
+
+### Results 2
+#### Params:
+**LSTM**
+hidden_size = 500, num_layers = 3, bidirectional = True, lstm_dropout = 0.2.
+
+**dataset**
+sequence_length = 2, batch_size = 32.
+
+**train**
+learning_rate = 0.001, epochs = 2.
+
+Loss = \[0.004410954854336689, 0.004378075456109152\]
+
+**val**
+- rgbd_dataset_freiburg1_room_secret
+  
+![image](https://github.com/ULE-MURIA-2023-2024/pr-vo-lstm-TheSmileXiao/assets/93156255/2f9adbbc-b6db-4a3c-af57-3b8793a9a999)
+
+- freiburg3_walking_rpy_validation
+  
+![image](https://github.com/ULE-MURIA-2023-2024/pr-vo-lstm-TheSmileXiao/assets/93156255/9c698cc5-65f3-43e1-9625-980cc8269fe3)
+
