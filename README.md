@@ -88,3 +88,20 @@ Loss = \[0.004410954854336689, 0.004378075456109152\]
   
 ![image](https://github.com/ULE-MURIA-2023-2024/pr-vo-lstm-TheSmileXiao/assets/93156255/9c698cc5-65f3-43e1-9625-980cc8269fe3)
 
+### Results 3
+#### Params:
+**LSTM**
+hidden_size = 500, num_layers = 2, bidirectional = False, lstm_dropout = 0.2.
+
+**dataset**
+sequence_length = 2, batch_size = 32.
+
+**train**
+learning_rate = 1e-4, epochs = 5.
+
+Loss = \[0.004411576853969812, 0.0.004347135645659198, 0.004248584973697275, 0.004054408310991924, 0.003642445802291728\]
+
+**val**
+- rgbd_dataset_freiburg1_room_secret
+  
+![image](https://github.com/ULE-MURIA-2023-2024/pr-vo-lstm-TheSmileXiao/assets/93156255/4f97a450-8f7d-428f-87f5-b190af363e74)
