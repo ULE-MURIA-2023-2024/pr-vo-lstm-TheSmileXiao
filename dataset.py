@@ -35,7 +35,28 @@ class VisualOdometryDataset(Dataset):
                     rgb_paths, ground_truth_data)
 
             # TODO: create sequences
+            for i in range(1, len(rgb_paths), 1):
 
+                if not validation:
+                    gt = [
+                        interpolated_ground_truth[i][1][0] - interpolated_ground_truth[i-1][1][0],
+                        interpolated_ground_truth[i][1][1] - interpolated_ground_truth[i-1][1][1],
+                        interpolated_ground_truth[i][1][2] - interpolated_ground_truth[i-1][1][2],
+                        interpolated_ground_truth[i][1][3] - interpolated_ground_truth[i-1][1][3],
+                        interpolated_ground_truth[i][1][4] - interpolated_ground_truth[i-1][1][4],
+                        interpolated_ground_truth[i][1][5] - interpolated_ground_truth[i-1][1][5],
+                        interpolated_ground_truth[i][1][6] - interpolated_ground_truth[i-1][1][6]]
+                if validation:
+                    gt = []
+                self.sequences.append(
+                    [
+                     rgb_paths[i][0], # timestamp
+                     rgb_paths[i-1][1], # image i-1
+                     rgb_paths[i][1], # image i
+                     gt # ground truth
+                    ]
+                )
+            
         self.transform = transform
         self.sequence_length = sequence_length
         self.validation = validation
@@ -47,12 +68,30 @@ class VisualOdometryDataset(Dataset):
 
         # Load sequence of images
         sequence_images = []
-        ground_truth_pos = []
+        ground_truth = []
         timestampt = 0
 
         # TODO: return the next sequence
+        sequence = self.sequences[idx]
+        timestampt = sequence[0]
+        
+        rgb_img1 = cv2.imread(sequence[1])
+        rgb_img1 = cv2.cvtColor(rgb_img1, cv2.COLOR_BGR2RGB)
+        rgm_img1 = self.transform(rgb_img1)
 
-        return sequence_images, ground_truth_pos, timestampt
+        rgb_img2 = cv2.imread(sequence[2])
+        rgb_img2 = cv2.cvtColor(rgb_img2, cv2.COLOR_BGR2RGB)
+        rgm_img2 = self.transform(rgb_img2)
+        
+        sequence_images = [rgm_img1, rgm_img2]
+        sequence_images = torch.stack(sequence_images)
+        
+        if not self.validation:
+            ground_truth = torch.FloatTensor(sequence[3])
+        else:
+            ground_truth = torch.FloatTensor([])
+            
+        return sequence_images, ground_truth, timestampt
 
     def read_images_paths(self, dataset_path: str) -> Tuple[float, str]:
 
@@ -82,7 +121,6 @@ class VisualOdometryDataset(Dataset):
 
                 if line.startswith("#"):  # Skip comment lines
                     continue
-
                 line = line.strip().split()
                 timestamp = float(line[0])
                 position = list(map(float, line[1:]))

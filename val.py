@@ -17,10 +17,16 @@ transform = T.Compose([
     model.resnet_transforms()
 ])
 
-
 # TODO: Load dataset
-train_loader = ...
-
+train_loader = DataLoader(
+    VisualOdometryDataset(
+        'dataset/val',
+        transform = transform,
+        sequence_length=sequence_length,
+        validation=True        
+    ),
+    batch_size=batch_size
+)
 
 # val
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -41,8 +47,8 @@ with torch.no_grad():
         target = model(images).cpu().numpy().tolist()[0]
 
         # TODO: add the results into the validation_string
+        validation_string += f"{timestamp[0]} {target[0]} {target[1]} {target[2]} {target[3]} {target[4]} {target[5]} {target[6]}\n"
 
-
-f = open("validation.txt", "a")
+f = open("validation.txt", "w")
 f.write(validation_string)
 f.close()

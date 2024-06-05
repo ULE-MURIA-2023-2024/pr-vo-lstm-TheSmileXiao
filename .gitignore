@@ -3,3 +3,4 @@ __pycache__
 vo.pt
 validation.txt
 dataset
+*.png

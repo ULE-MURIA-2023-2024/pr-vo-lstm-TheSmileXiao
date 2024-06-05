@@ -25,11 +25,27 @@ class VisualOdometryModel(nn.Module):
         # Freeze the weights of the ResNet layers
         for param in self.cnn_model.parameters():
             param.requires_grad = False
+            
+        ## create the LSTM
+        self.hidden_size = hidden_size
+        self.num_layers = num_layers
+        self.lstm = nn.LSTM(
+            resnet_output,
+            hidden_size,
+            num_layers,
+            batch_first = True,
+            bidirectional = bidirectional,
+            dropout = lstm_dropout
+        )
 
-        # TODO: create the LSTM
+        ## create the FC to generate the translation (3) and rotation (4)
+        self.fc = nn.Sequential(
+            nn.Linear(hidden_size * pow(2, int(bidirectional)), hidden_size),
+            nn.ReLU(True),
+            nn.Linear(hidden_size, 7)
+        )
 
-        # TODO: create the FC to generate the translation (3) and rotation (4)
-
+        
     def resnet_transforms(self) -> Callable:
         return weights.DEFAULT.transforms(antialias=True)
 
@@ -42,7 +58,9 @@ class VisualOdometryModel(nn.Module):
         with torch.no_grad():
             features = self.cnn_model(features)
 
-        # TODO: use the LSTM
-
-        # TODO: Get the output of the last time step
-        return ...
+        ## use the LSTM
+        features = features.view(batch_size, seq_length, -1)
+        lstm_out, _ = self.lstm(features)
+        
+        ## Get the output of the last time step
+        return self.fc(lstm_out[:, -1, :])
